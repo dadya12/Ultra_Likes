@@ -21,6 +21,7 @@
             <p class="card-text">Контент: {{ article.content }}</p>
             <p class="card-text">Дата создания: {{ article.created_at|date:'Y-m-d' }}</p>
             <p class="card-text">Cтатус: {{ article.get_status_display }}</p>
+            <span></span>
             <p>Теги:
                 {% for tag in article.tags.all %}
                     {{ tag.name }}{% if forloop.last %}. {% else %}, {% endif %}
@@ -28,6 +29,7 @@
                     Нет ни одного тега
                 {% endfor %}
             </p>
+         <a href="{% url "webapp:test_js" article.pk %}" class="btn btn-primary" data-js="js">Нажать</a>
         </div>
     </div>
     {% if comments.exists %}

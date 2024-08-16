@@ -1,7 +1,7 @@
 <div class="row">
     {% for article in articles %}
         <div class="col-12 col-md-6 col-lg-4">
-            <div class="card mt-3" style="width: 18rem;">
+            <div class="card mt-3" style="width: 18rem;" id="article_{{ article.pk }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ article.title }}</h5>
                     <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
@@ -13,6 +13,7 @@
                         {% endfor %}
                     </p>
                     <div class="btn-group" role="group">
+                    <span></span>
                         <a href="{{ article.get_absolute_url }}" class="btn btn-primary"><i
                                 class="bi bi-blockquote-right"></i></a>
                         {% if perms.webapp.change_article or request.user == article.author %}
@@ -23,6 +24,7 @@
                             <a href="{% url "webapp:delete_article" article.pk %}" class="btn btn-primary"><i
                                     class="bi bi-trash3"></i></a>
                         {% endif %}
+                    <a href="{% url "webapp:test_js" article.pk %}" class="btn btn-primary" data-js="js">Нажать</a>
                     </div>
                 </div>
             </div>
