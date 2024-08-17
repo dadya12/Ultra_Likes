@@ -1,20 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import CreateView, UpdateView, DeleteView
-
+from django.views.generic import CreateView, UpdateView, DeleteView, View
 from webapp.forms import CommentForm
 from webapp.models import Article, Comment
+from django.http import JsonResponse
 
 
 class CreateCommentView(LoginRequiredMixin, CreateView):
     template_name = "comments/create_comment.html"
     form_class = CommentForm
-
-    # def form_valid(self, form):
-    #     article = get_object_or_404(Article, pk=self.kwargs['pk'])
-    #     form.instance.article = article
-    #     return super().form_valid(form)
 
     def form_valid(self, form):
         article = get_object_or_404(Article, pk=self.kwargs['pk'])
@@ -24,9 +19,6 @@ class CreateCommentView(LoginRequiredMixin, CreateView):
         comment.save()
         return redirect(article.get_absolute_url())
 
-    # def get_success_url(self):
-    #     return reverse("webapp:article_detail", kwargs={"pk": self.object.article.pk})
-
 
 class UpdateCommentView(UpdateView):
     template_name = "comments/update_comment.html"
@@ -35,6 +27,17 @@ class UpdateCommentView(UpdateView):
 
     def get_success_url(self):
         return reverse("webapp:article_detail", kwargs={"pk": self.object.article.pk})
+
+
+class LikeCommentView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        comment = get_object_or_404(Comment, pk=pk)
+        liked = request.user in comment.users_likes.all()
+        if liked:
+            comment.users_likes.remove(request.user)
+        else:
+            comment.users_likes.add(request.user)
+        return JsonResponse({'total_likes': comment.users_likes.count(), 'liked': not liked})
 
 
 class DeleteCommentView(DeleteView):

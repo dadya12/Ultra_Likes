@@ -1,3 +1,4 @@
+{% load static %}
 <div class="row">
     {% for article in articles %}
         <div class="col-12 col-md-6 col-lg-4">
@@ -8,12 +9,11 @@
                     <p class="card-text">
                         {% for tag in article.tags.all %}
                             {{ tag.name }}{% if forloop.last %}. {% else %}, {% endif %}
-                            {% empty %}
+                        {% empty %}
                             Нет ни одного тега
                         {% endfor %}
                     </p>
                     <div class="btn-group" role="group">
-                    <span></span>
                         <a href="{{ article.get_absolute_url }}" class="btn btn-primary"><i
                                 class="bi bi-blockquote-right"></i></a>
                         {% if perms.webapp.change_article or request.user == article.author %}
@@ -24,15 +24,26 @@
                             <a href="{% url "webapp:delete_article" article.pk %}" class="btn btn-primary"><i
                                     class="bi bi-trash3"></i></a>
                         {% endif %}
-                    <a href="{% url "webapp:test_js" article.pk %}" class="btn btn-primary" data-js="js">Нажать</a>
                     </div>
                 </div>
+                <span style="margin-left: 15px" class="like-count">Лайков: {{ article.users_likes.count }}</span>
+                {% if request.user.is_authenticated %}
+                    <a href="" class="like-article" data-url="{% url 'webapp:article_like' article.pk %}"
+                       style="display: block; text-align: center; width: 100%; padding: 10px 10px; background-color: aqua">
+                        {% if request.user in article.users_likes.all %}
+                            <i class="bi bi-heart-fill"></i>
+                        {% else %}
+                            <i class="bi bi-heart"></i>
+                        {% endif %}
+                    </a>
+                {% endif %}
             </div>
         </div>
-        {% empty %}
+    {% empty %}
         <h2>статьи не найдены</h2>
     {% endfor %}
 </div>
 {% if is_paginated %}
     {% include "partial/pagination.html" %}
 {% endif %}
+<script src="{% static 'js/scripts.js' %}"></script>

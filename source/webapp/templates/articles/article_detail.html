@@ -2,7 +2,8 @@
 
 {% block links %}
     <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="{% url 'webapp:update_article' article.pk %}">Редактировать</a>
+        <a class="nav-link active" aria-current="page"
+           href="{% url 'webapp:update_article' article.pk %}">Редактировать</a>
     </li>
     <li class="nav-item">
         <a class="nav-link active" aria-current="page" href="{% url 'webapp:delete_article' article.pk %}">Удалить</a>
@@ -25,11 +26,11 @@
             <p>Теги:
                 {% for tag in article.tags.all %}
                     {{ tag.name }}{% if forloop.last %}. {% else %}, {% endif %}
-                    {% empty %}
+                {% empty %}
                     Нет ни одного тега
                 {% endfor %}
             </p>
-         <a href="{% url "webapp:test_js" article.pk %}" class="btn btn-primary" data-js="js">Нажать</a>
+
         </div>
     </div>
     {% if comments.exists %}
@@ -38,10 +39,20 @@
             <p>{{ comment.text }}</p>
             <p>{{ comment.author }}</p>
             <p>{{ comment.created_at|date:"Y-m-d h:m:s" }}</p>
+            <span class="like-count">Лайков: {{ comment.users_likes.count }}</span>
             <a href="{% url "webapp:update_comment" comment.pk %}"
-                               class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
+               class="btn btn-primary"><i class="bi bi-pencil-square"></i></a>
             <a href="{% url "webapp:delete_comment" comment.pk %}" class="btn btn-primary"><i
-                                    class="bi bi-trash3"></i></a>
+                    class="bi bi-trash3"></i></a>
+            {% if request.user.is_authenticated %}
+                <a href="" class="like-comment" data-url="{% url 'webapp:comment_like' comment.pk %}">
+                {% if request.user in comment.users_likes.all %}
+                    <i class="bi bi-heart-fill"></i>
+                {% else %}
+                    <i class="bi bi-heart"></i>
+                {% endif %}
+            {% endif %}
+        </a>
         {% endfor %}
     {% endif %}
 {% endblock %}

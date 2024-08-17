@@ -10,22 +10,26 @@ async function makeRequest(url, method="GET"){
     }
 }
 
-async function onClick(event){
+async function onClick(event) {
     event.preventDefault();
-    let a = event.target;
-    let url = a.href;
-    let response = await makeRequest(url);
-    console.log(a.parentElement)
-    let span = a.parentElement.getElementsByTagName("span")[0]
-    span.innerText = response.test
-    console.log(response)
+    let link = event.target.closest('.like-article, .like-comment');
+    let url = link.getAttribute('data-url');
+    try {
+        let response = await makeRequest(url);
+        let span = link.parentElement.querySelector(".like-count");
+        span.innerText = `Лайков: ${response.total_likes}`;
+        link.querySelector('i').classList.toggle('bi-heart-fill', response.liked);
+        link.querySelector('i').classList.toggle('bi-heart', !response.liked);
+    } catch (error) {
+        console.error("Failed to update like:", error);
+    }
 }
 
-function onLoad(){
-    let links= document.querySelectorAll('[data-js="js"]');
-    for (let link of links){
+function onLoad() {
+    let links = document.querySelectorAll('.like-article, .like-comment');
+    links.forEach(link => {
         link.addEventListener("click", onClick);
-    }
+    });
 }
 
 window.addEventListener("load", onLoad);

@@ -15,6 +15,7 @@ class Comment(BaseModel):
         on_delete=models.SET_DEFAULT,
         default=1
     )
+    users_likes = models.ManyToManyField(get_user_model(), related_name='users_likes_com')
 
     def __str__(self):
         return self.text[:20]
