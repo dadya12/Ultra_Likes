@@ -13,6 +13,7 @@ async function makeRequest(url, method="GET"){
 async function onClick(event) {
     event.preventDefault();
     let link = event.target.closest('.like-article, .like-comment');
+    if (!link) return;
     let url = link.getAttribute('data-url');
     try {
         let response = await makeRequest(url);
@@ -20,10 +21,12 @@ async function onClick(event) {
         span.innerText = `Лайков: ${response.total_likes}`;
         link.querySelector('i').classList.toggle('bi-heart-fill', response.liked);
         link.querySelector('i').classList.toggle('bi-heart', !response.liked);
+        window.location.reload();
     } catch (error) {
         console.error("Failed to update like:", error);
     }
 }
+
 
 function onLoad() {
     let links = document.querySelectorAll('.like-article, .like-comment');
