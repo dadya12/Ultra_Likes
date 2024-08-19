@@ -22,7 +22,6 @@
             <p class="card-text">Контент: {{ article.content }}</p>
             <p class="card-text">Дата создания: {{ article.created_at|date:'Y-m-d' }}</p>
             <p class="card-text">Cтатус: {{ article.get_status_display }}</p>
-            <span></span>
             <p>Теги:
                 {% for tag in article.tags.all %}
                     {{ tag.name }}{% if forloop.last %}. {% else %}, {% endif %}
@@ -46,13 +45,13 @@
                     class="bi bi-trash3"></i></a>
             {% if request.user.is_authenticated %}
                 <a href="" class="like-comment" data-url="{% url 'webapp:comment_like' comment.pk %}">
-                {% if request.user in comment.users_likes.all %}
-                    <i class="bi bi-heart-fill"></i>
-                {% else %}
-                    <i class="bi bi-heart"></i>
-                {% endif %}
+                    {% if request.user in comment.users_likes.all %}
+                        <i class="bi bi-heart-fill"></i>
+                    {% else %}
+                        <i class="bi bi-heart"></i>
+                    {% endif %}
+                </a>
             {% endif %}
-        </a>
         {% endfor %}
     {% endif %}
 {% endblock %}
